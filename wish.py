@@ -1,123 +1,121 @@
 import streamlit as st
 import time
-import random
 
-# 1. 页面配置
-st.set_page_config(page_title="Special Surprise", page_icon="🎁", layout="centered")
+# 页面配置
+st.set_page_config(page_title="3.8 专属动态贺卡", page_icon="💌", layout="centered")
 
-# 2. 大厂风 UI 设计 (毛玻璃效果 & 优雅字体)
+# --- 核心 UI 样式（贺卡化 & 动态爱心背景） ---
 st.markdown("""
     <style>
+    /* 全局背景：动态渐变 */
     .stApp {
-        background: linear-gradient(135deg, #fce4ec 0%, #f8bbd0 100%);
+        background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #fad0c9, #ffdde1);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
     }
-    /* 玻璃拟态卡片 */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 30px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-        margin-bottom: 20px;
+    @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
-    /* 苹果风格的大按钮 */
+
+    /* 贺卡容器样式 */
+    .card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 30px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        border: 2px solid #fff;
+        text-align: center;
+        transition: transform 0.3s ease;
+        animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+
+    /* 按钮美化 */
     .stButton>button {
-        width: 100%;
-        border-radius: 12px;
-        border: none;
-        background-color: #ec407a;
-        color: white;
-        height: 3em;
-        font-weight: bold;
-        transition: 0.3s;
-    }
-    .stButton>button:hover {
-        background-color: #d81b60;
-        transform: translateY(-2px);
-    }
-    h1, h2, h3 {
-        color: #880e4f !important;
-        font-family: 'PingFang SC', 'Helvetica Neue', sans-serif;
+        background: linear-gradient(90deg, #ff758c 0%, #ff7eb3 100%);
+        color: white !important;
+        border-radius: 50px !important;
+        border: none !important;
+        padding: 10px 30px !important;
+        font-size: 18px !important;
+        font-weight: bold !important;
+        box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
     }
     </style>
+    
+    <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;">
+        <marquee direction="down" scrollamount="5" style="height: 100%; width: 100%; opacity: 0.3;">
+            <span style="font-size: 30px; margin-left: 10%;">❤️</span>
+            <span style="font-size: 20px; margin-left: 20%;">🌸</span>
+            <span style="font-size: 40px; margin-left: 50%;">✨</span>
+            <span style="font-size: 25px; margin-left: 80%;">❤️</span>
+        </marquee>
+    </div>
     """, unsafe_allow_html=True)
 
-# 3. 状态管理
+# --- 逻辑控制 ---
 if 'stage' not in st.session_state:
     st.session_state.stage = 'q1'
 
-# --- 第一层：整蛊答题（日期） ---
-if st.session_state.stage == 'q1':
-    st.markdown("<div class='glass-card'><h2>第一关：考验默契的时候到了</h2>", unsafe_allow_html=True)
-    q1 = st.text_input("今天是几月几日？（这都答错就准备搓衣板吧😏）", placeholder="例如：3月8日")
-    if st.button("提交答案"):
-        if "3" in q1 and "8" in q1:
-            st.success("算你识相，过关！")
-            time.sleep(1)
-            st.session_state.stage = 'q2'
+# 关卡显示函数
+def show_card(content_type):
+    st.markdown('<div class="card">', unsafe_allow_html=True)
+    if content_type == 'q1':
+        st.markdown("<h3>🕵️ 身份验证 (1/2)</h3>", unsafe_allow_html=True)
+        date_ans = st.text_input("今天是几月几日？", placeholder="例如：308")
+        if st.button("下一步"):
+            if "3" in date_ans and "8" in date_ans:
+                st.session_state.stage = 'q2'
+                st.rerun()
+            else: st.warning("记错日期的后果很严重哦~")
+            
+    elif content_type == 'q2':
+        st.markdown("<h3>🤔 身份验证 (2/2)</h3>", unsafe_allow_html=True)
+        st.write("让我猜猜，哪位小仙女现在还在辛勤加班？")
+        name_ans = st.text_input("输入Ta的名字：", placeholder="提示：沈...")
+        if st.button("解锁贺卡"):
+            if "沈渊博" in name_ans or "我" in name_ans:
+                st.session_state.stage = 'wish'
+                st.rerun()
+            else: st.warning("名字不对，礼物不给！")
+
+    elif content_type == 'wish':
+        st.balloons()
+        st.markdown("<h2 style='color: #ff4b6b;'>💝 专属贺卡 💝</h2>", unsafe_allow_html=True)
+        
+        # 第一层：工作祝福
+        st.markdown("""
+            <p style='font-size: 18px; color: #666;'><b>Phase 1: 能量补给站</b><br>
+            亲爱的沈老师，工作辛苦啦！<br>
+            愿你的所有努力都有回响，加班的时光也能被温柔治愈。</p>
+            <hr style='border: 0.5px solid #eee'>
+        """, unsafe_allow_html=True)
+        
+        # 第二层：节日祝福
+        st.markdown("""
+            <p style='font-size: 20px; color: #d63384;'><b>Phase 2: 女神节快乐</b><br>
+            3月8日，愿你眼里有星辰，生活有甜头。<br>
+            在这个属于你的日子里，要做最快乐的小朋友！</p>
+            <hr style='border: 0.5px solid #eee'>
+        """, unsafe_allow_html=True)
+        
+        # 第三层：公开课祝福
+        st.markdown("""
+            <p style='font-size: 22px; color: #ff758c; font-weight: bold;'><b>Phase 3: 必胜锦囊</b><br>
+            最最重要的是——祝下周公开课顺利！<br>
+            你专注的样子最迷人，一定能大获成功！🚀</p>
+        """, unsafe_allow_html=True)
+        
+        if st.button("重新感受浪漫"):
+            st.session_state.stage = 'q1'
             st.rerun()
-        else:
-            st.error("日期都能记错？再给你一次机会！")
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-# --- 第二层：整蛊答题（加班） ---
-elif st.session_state.stage == 'q2':
-    st.markdown("<div class='glass-card'><h2>第二关：让我猜猜...</h2>", unsafe_allow_html=True)
-    st.write("让我猜猜今天谁还在苦逼地加班，好难猜啊... 🤔")
-    q2 = st.text_input("请输入那个加班狂的名字：", placeholder="提示：远在天边近在眼前")
-    if st.button("确定是Ta吗？"):
-        if any(name in q2 for name in ["沈渊博", "我", "你自己"]):
-            st.success("哈哈哈哈，真相了！这就为你开启补偿模式~")
-            time.sleep(1.5)
-            st.session_state.stage = 'wish1'
-            st.rerun()
-        else:
-            st.warning("虽然Ta可能也在加班，但不是我要的那个答案哦~")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# --- 祝福页面：第一层（工作快乐） ---
-elif st.session_state.stage == 'wish1':
-    st.snow() # 意境雪花
-    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-    st.title("💼 Level 1: 能量补给")
-    st.subheader("辛苦啦！加班的小仙女")
-    st.write("知道你现在还在工位上奋斗，希望这些文字能给你充点电：")
-    st.info("“愿你的工作只有成就感，没有疲惫感；代码一遍过，方案不被改！”")
-    if st.button("点击领取下一份惊喜 →"):
-        st.session_state.stage = 'wish2'
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# --- 祝福页面：第二层（妇女节快乐） ---
-elif st.session_state.stage == 'wish2':
-    st.balloons() # 气球雨
-    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-    st.title("🌹 Level 2: 女神专属")
-    st.subheader("3月8日，你最闪耀")
-    st.write("不仅是今天，愿你每一天都能活得热烈而自在。")
-    st.success("“妇女节快乐！去做那个不被定义的、最好的自己。”")
-    if st.button("最后一份惊喜，请查收 →"):
-        st.session_state.stage = 'wish3'
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
-
-# --- 祝福页面：第三层（公开课顺利） ---
-elif st.session_state.stage == 'wish3':
-    # 烟花/爱心雨效果 (Streamlit 自带气球和雪花，爱心可以用 emoji 动画模拟)
-    st.toast("❤️❤️❤️❤️❤️❤️❤️❤️", icon="💖")
-    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-    st.title("🎯 Level 3: 旗开得胜")
-    st.subheader("下周公开课特辑")
-    st.write("压轴的祝福送给下周最重要的事情：")
-    st.markdown("""
-        ### 📢 **祝：公开课大圆满！**
-        全场最稳是你，最自信也是你。<br>
-        别紧张，你准备得那么充分，一定会惊艳全场的！<br>
-        我在后方为你疯狂打 call 📣
-    """, unsafe_allow_html=True)
-    
-    if st.button("重新开始仪式"):
-        st.session_state.stage = 'q1'
-        st.rerun()
-    st.markdown("</div>", unsafe_allow_html=True)
+# 执行显示
+show_card(st.session_state.stage)
