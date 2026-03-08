@@ -2,7 +2,7 @@ import streamlit as st
 import time
 
 # 1. 页面配置
-st.set_page_config(page_title="沈渊博节日快乐", page_icon="🌹", layout="centered")
+st.set_page_config(page_title="沈渊博节日快乐（快乐加班🤣）", page_icon="🌹", layout="centered")
 
 # 2. 极致 UI 优化 (消除毛边，填充内容，增强质感)
 st.markdown("""
