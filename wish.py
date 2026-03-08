@@ -2,7 +2,7 @@ import streamlit as st
 import time
 
 # 1. 页面配置
-st.set_page_config(page_title="沈渊博节日快乐", page_icon="🌹", layout="centered")
+st.set_page_config(page_title="3.8 Special Gift", page_icon="🌹", layout="centered")
 
 # 2. 极致 UI 优化 (消除毛边，填充内容，增强质感)
 st.markdown("""
@@ -164,4 +164,8 @@ elif st.session_state.step == 5:
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
     st.markdown('<p class="title-text">Best Wish</p>', unsafe_allow_html=True)
     st.markdown('<p class="main-desc" style="font-weight:700; color:#ffeaa7;">“ 祝下周公开课，<br>旗开得胜，圆满成功！ ”</p>', unsafe_allow_html=True)
-    st.markdown("<p style='color:rgba(255,255,255,0.9); font-size:22px;'>你专注的样子最有魅力。<br>你是最棒的，我们都为你加油！💪</
+    st.markdown("<p style='color:rgba(255,255,255,0.9); font-size:22px;'>你专注的样子最有魅力。<br>你是最棒的，我们都为你加油！💪</p>", unsafe_allow_html=True)
+    if st.button("重新回味"):
+        st.session_state.step = 1
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
