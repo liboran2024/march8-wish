@@ -2,7 +2,7 @@ import streamlit as st
 import time
 
 # 1. 页面配置
-st.set_page_config(page_title="3.8 Special Gift", page_icon="🌹", layout="centered")
+st.set_page_config(page_title="沈渊博节日快乐", page_icon="🌹", layout="centered")
 
 # 2. 极致 UI 优化 (消除毛边，填充内容，增强质感)
 st.markdown("""
@@ -114,7 +114,7 @@ st.markdown('<div style="text-align:center;"><p class="top-banner">Happy 3.8 Day
 if st.session_state.step == 1:
     st.markdown('<div class="glass-card">', unsafe_allow_html=True)
     st.markdown('<p class="title-text">Step 01</p>', unsafe_allow_html=True)
-    st.markdown('<p class="main-desc">Hi, 今天是几月几日？<br><span style="font-size:16px; opacity:0.8;">(提示：一个浪漫的数字组合)</span></p>', unsafe_allow_html=True)
+    st.markdown('<p class="main-desc">Hi, 今天是几月几日？<br><span style="font-size:16px; opacity:0.8;">(提示：国际节日👀)</span></p>', unsafe_allow_html=True)
     q1 = st.text_input("Date", placeholder="在此输入日期", label_visibility="collapsed")
     if st.button("下一步"):
         if "3" in q1 and "8" in q1:
