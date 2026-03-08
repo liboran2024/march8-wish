@@ -2,65 +2,84 @@ import streamlit as st
 import time
 import random
 
-# 页面基础配置
-st.set_page_config(page_title="3.8 专属惊喜", page_icon="🌹", layout="centered")
+# 1. 页面配置：设置一个心动的标题和图标
+st.set_page_config(page_title="致最特别的你", page_icon="💖", layout="centered")
 
-# 自定义 CSS 让界面更精致
+# 2. 注入自定义 CSS：改变背景颜色和字体
 st.markdown("""
     <style>
-    .main { background-color: #fff5f5; }
-    .stButton>button { width: 100%; border-radius: 20px; border: 1px solid #ff4b4b; color: #ff4b4b; }
-    h1 { color: #d63384; text-align: center; }
+    .stApp {
+        background: linear-gradient(to bottom, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+    }
+    .main-title {
+        color: white;
+        text-shadow: 2px 2px 4px #000000;
+        text-align: center;
+        font-family: 'Microsoft YaHei';
+    }
+    .wish-text {
+        font-size: 20px;
+        color: #d63384;
+        background: rgba(255, 255, 255, 0.6);
+        padding: 20px;
+        border-radius: 15px;
+        border-left: 5px solid #d63384;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-st.title("✨ 属于你的 3.8 节惊喜 ✨")
+# 3. 初始界面
+if 'step' not in st.session_state:
+    st.session_state.step = 1
 
-# 1. 身份验证（增加一点仪式感）
-if 'auth' not in st.session_state:
-    st.session_state.auth = False
+# 第一步：神秘入口
+if st.session_state.step == 1:
+    st.markdown("<h1 class='main-title'>🔒 收到一份加密的讯息</h1>", unsafe_allow_html=True)
+    password = st.text_input("请输入暗号（提示：你的名字是...）", type="password")
+    if st.button("解密 🔓"):
+        if password == "沈渊博" or password == "308":  # 这里改写你俩的梗
+            st.session_state.step = 2
+            st.rerun()
+        else:
+            st.error("暗号不对哟，再试一次？")
 
-if not st.session_state.auth:
-    psw = st.text_input("请输入我们的专属暗号（比如你的生日）：", type="password")
-    if psw == "0308": # 这里改为你们约定的数字
-        st.session_state.auth = True
-        st.success("验证通过！正在开启...")
-        time.sleep(1)
-        st.rerun()
-    elif psw:
-        st.error("暗号不对哦，再想想？")
+# 第二步：仪式感加载
+elif st.session_state.step == 2:
+    st.markdown("<h1 class='main-title'>正在同步心跳频率...</h1>", unsafe_allow_html=True)
+    progress_bar = st.progress(0)
+    for i in range(100):
+        time.sleep(0.02)
+        progress_bar.progress(i + 1)
+    st.session_state.step = 3
+    st.rerun()
 
-# 2. 验证通过后的交互内容
-if st.session_state.auth:
-    # 模拟“爱意加载”
-    progress_text = "正在调动全宇宙的浪漫资源..."
-    my_bar = st.progress(0, text=progress_text)
-    for percent_complete in range(100):
-        time.sleep(0.01)
-        my_bar.progress(percent_complete + 1, text=progress_text)
+# 第三步：正式祝福界面
+elif st.session_state.step == 3:
+    st.balloons()  # 撒气球
+    st.markdown("<h1 class='main-title'>🌹 3.8 女神节快乐！</h1>", unsafe_allow_html=True)
     
-    st.balloons() # 满屏气球
+    st.markdown("""
+    <div class='wish-text'>
+    亲爱的：<br>
+    在这个特别的日子里，不想只祝你节日快乐，<br>
+    更想祝你每天都能随心所欲，活出最灿烂的自己。<br>
+    你是我的专属星辰，永远闪闪发光。✨
+    </div>
+    """, unsafe_allow_html=True)
     
-    st.header("🌹 亲爱的，女神节快乐！")
+    st.divider()
     
-    # 动态祝福展示
-    quotes = [
-        "愿你眼中总有光芒，活成自己喜欢的模样。",
-        "不只是今天，每一天你都闪闪发光。",
-        "世界因你而温柔，愿你被生活温柔以待。",
-        "做自己的女王，不卑不亢，不慌不忙。"
+    # 交互小彩蛋：点一下换一个赞美
+    compliments = [
+        "今天的你比昨天更迷人！💃",
+        "你的笑容是全世界最有效的治愈剂。🌸",
+        "愿你眼中总有星辰，心中总有大海。🌊",
+        "做自己的女王，不卑不亢，温柔而有力量。👑"
     ]
     
-    st.info(random.choice(quotes))
-    
-    # 互动环节
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("点此接收一束花 💐"):
-            st.write("🌷🌻🌹🌼🌸🌺")
-    with col2:
-        if st.button("点此接收一个抱抱 🤗"):
-            st.write("🧸💖✨")
+    if st.button("点击抽取今日份赞美词"):
+        st.write(f"### {random.choice(compliments)}")
+        st.snow() # 撒点雪花增加浪漫感
 
-    # 底部留言
-    st.text_area("我想对你说：", "在这里写下你最想对她说的话，她可以直接看到...")
+    # 如果有合照，可以解除注释并替换 URL
+    # st.image("https://example.com/your-photo.jpg", caption="定格美好时刻")
